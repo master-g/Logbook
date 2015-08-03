@@ -34,6 +34,10 @@ SOFTWARE.
 
 /*
  * TODO:
+ * 1. add screen capture function, ref https://github.com/tlrobinson/element-capture
+ * 2. refine battle analyze
+ * 3. refine record management
+ * 4. change amatsukaze avatar
  */
 
 LBUtil = {};

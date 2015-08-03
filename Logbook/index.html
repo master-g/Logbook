@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Logbook</title>
+
+    <!-- Bootstrap -->
+    <link href="./libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables -->
+    <link href="./libs/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="./libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- Agreement Modal -->
+    <div class="modal fade" id="agreementModal" tabindex="-1" role="dialog" aria-labelledby="agreementModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="agreementModalLabel">
+            <span class="glyphicon glyphicon-exclamation-sign"></span> Logbook Terms of Service
+            </h4>
+          </div>
+          <div class="modal-body">
+            <p>Kancolle Logbook is a tool designed for web flash game 艦隊これくしょん～艦これ～™</p>
+            <h5>PRIVACY POLICY</h5>
+            <p>1. We don’t collect any of your personal info, including your IP address, other than information you voluntarily provide.</p>
+            <p>2. We don’t sell your personal info to advertisers or other third parties.</p>
+            <p>3. We don't modify your network data.</p>
+            <h5>DISCLAIMER</h5>
+            <p>THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL LOGBOOK, THE AUTHOR, OR ANY OF THEIR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+            <h5>TRADEMARKS</h5>
+            <p>艦隊これくしょん～艦これ～ is a registered trademark of DMM.com/POWERCHORD STUDIO/C2/KADOKAWA</p>
+            <h5>LICENSE</h5>
+            <p>Copyright ©2015 Logbook.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" id="agreementDeny" data-dismiss="modal">I Do Not Agree</button>
+            <button type="button" class="btn btn-success" id="agreementAccept" data-dismiss="modal">I Agree</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="mainModalLabel">
+            <span class="glyphicon glyphicon-exclamation-sign" id='mainModalIcon'></span>
+            <span id="mainModalTitle"> API DATA MISSING</span>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <div class="progress">
+              <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                <span class="sr-only">100% Complete</span>
+              </div>
+            </div>
+            <div id='modalReloadPrompt'>
+              <p>Kancolle Logbook need more data to work properly</p>
+              <p>Please <kbd>RELOAD</kbd> the game page.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exchange Modal -->
+    <div class="modal fade" id="exchangeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exchangeLabel">Record Dump</h4>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-danger alert-dismissible" role="alert" id="exchangeAlert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Invalid input, check your data.
+            </div>
+            <div class="alert alert-success alert-dismissible" role="alert" id="exchangeSuccess">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Succefully Import Record.
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-list-alt"></i></span>
+              <input type="text" class="form-control" placeholder="content" aria-describedby="basic-addon1" id="exchangeInput">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-warning" id="exchangeMerge">Merge</button>
+            <button type="button" class="btn btn-danger" id="exchangeClearApply">Clear &amp; Apply</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Tabs -->
+    <div id="content">
+      <ul id="main_tabs" class="nav nav-tabs" data-tabs="tabs">
+          <li class="active"><a href="#tab_port" data-toggle="tab">
+            <i class="fa fa-home"></i> Port <span class="badge" id="badge_port"></span></a></li>
+          <li><a href="#tab_battle" data-toggle="tab">
+            <i class="fa fa-anchor"></i> Battle <span class="badge" id="badge_battle"></span></a></li>
+          <li><a href="#tab_statistics" data-toggle="tab">
+            <i class="fa fa-bar-chart"></i> Statistics <span class="badge" id="badge_statistics"></span></a></li>
+          <li><a href="#tab_log" data-toggle="tab">
+            <i class="fa fa-book"></i> Log <span class="badge" id="badge_log"></span></a></li>
+          <li><a href="#tab_setting" data-toggle="tab">
+            <i class="fa fa-cog"></i> Setting <span class="badge" id="badge_setting"></span></a></li>
+          <li><a href="#tab_info" data-toggle="tab">
+            <i class="fa fa-info-circle"></i> Info <span class="badge" id="badge_info"></span></a></li>
+      </ul>
+      <p></p>
+      <div id="my-tab-content" class="tab-content">
+        <!-- Port -->
+        <div class="tab-pane active" id="tab_port">
+          <div class="container-fluid">
+            <div class="row">
+
+              <!-- ndock (repair docks) -->
+              <div class="col-md-3">
+                <div class="list-group">
+
+                  <a class="list-group-item list-group-item-info">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="ndock_1"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="ndock_progress_1" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="ndock_progress_text_1"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-info">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="ndock_2"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="ndock_progress_2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="ndock_progress_text_2"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-info">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="ndock_3"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="ndock_progress_3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="ndock_progress_text_3"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-info">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="ndock_4"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="ndock_progress_4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="ndock_progress_text_4"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                    
+                </div>
+              </div>
+
+              <!-- kdock (construction docks) -->
+              <div class="col-md-3">
+                <div class="list-group">
+
+                  <a class="list-group-item list-group-item-success">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="kdock_1"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="kdock_progress_1" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="kdock_progress_text_1"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-success">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="kdock_2"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="kdock_progress_2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="kdock_progress_text_2"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-success">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="kdock_3"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="kdock_progress_3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="kdock_progress_text_3"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-success">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <span id="kdock_4"> [N/A] </span>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="progress">
+                          <div class="progress-bar" id="kdock_progress_4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                            <span id="kdock_progress_text_4"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                    
+                </div>
+              </div>
+
+              <!-- resource -->
+              <div class="col-md-2">
+                <div class="list-group">
+
+                  <a class="list-group-item list-group-item-warning" data-toggle="tooltip" data-placement="bottom" title="" id="res_tooltip_1">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-tint"></i>
+                        <!-- <span class="glyphicon glyphicon-oil" aria-hidden="true" id="res_icon_1"></span> -->
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar" id="res_progress_1" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 1em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-warning" data-toggle="tooltip" data-placement="top" title="" id="res_tooltip_2">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-rocket"></i>
+                        <!-- <span class="glyphicon glyphicon-tags" aria-hidden="true" id="res_icon_2"></span> -->
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar" id="res_progress_2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 1em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-warning" data-toggle="tooltip" data-placement="top" title="" id="res_tooltip_3">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-cubes"></i>
+                        <!-- <span class="glyphicon glyphicon-align-justify" aria-hidden="true" id="res_icon_3"></span> -->
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar" id="res_progress_3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 1em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-warning" data-toggle="tooltip" data-placement="top" title="" id="res_tooltip_4">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-plane"></i>
+                        <!-- <span class="glyphicon glyphicon-plane" aria-hidden="true" id="res_icon_4"></span> -->
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar" id="res_progress_4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 1em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                    
+                </div>
+              </div>
+
+              <!-- mission -->
+              <div class="col-md-2">
+                <div class="list-group">
+
+                  <a class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="bottom" title="" id="mission_tooltip_1">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-clock-o"></i>
+                        <!--span class="glyphicon glyphicon-time" aria-hidden="true"></span-->
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar progress-bar-info" id="mission_progress_1" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="" id="mission_tooltip_2">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar progress-bar-info" id="mission_progress_2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="" id="mission_tooltip_3">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                      <div class="col-md-10">
+                        <div class="progress">
+                          <div class="progress-bar progress-bar-info" id="mission_progress_3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                    
+                </div>
+              </div>
+
+            </div>
+            
+            <!-- Fleet -->
+            <nav>
+              <ul class="pagination">
+                <li class="disabled"><a aria-label="Previous"><span aria-hidden="true">Fleet</span></a></li>
+                <li id="port_fleet_1"><a>1</a></li>
+                <li id="port_fleet_2"><a>2</a></li>
+                <li id="port_fleet_3"><a>3</a></li>
+                <li id="port_fleet_4"><a>4</a></li>
+              </ul>
+            </nav>
+            <div class="row">
+
+              <div class="col-md-2">
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1">
+                  <i class="fa fa-flag"></i>
+                  <span id="port_fleet_ship_1_name">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1_cond">
+                  <i id="port_fleet_ship_1_cond_icon" class="fa fa-smile-o"></i>
+                  <span id="port_fleet_ship_1_cond_text">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1_exp">
+                  <span id="port_fleet_ship_1_exp_text"></span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1_slot_1">
+                  <span id="port_fleet_ship_1_slottext_1">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1_slot_2">
+                  <span id="port_fleet_ship_1_slottext_2">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1_slot_3">
+                  <span id="port_fleet_ship_1_slottext_3">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_1_slot_4">
+                  <span id="port_fleet_ship_1_slottext_4">N/A</span>
+                </a>
+              </div>
+              <div class="col-md-2">
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2">
+                  <span id="port_fleet_ship_2_name">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2_cond">
+                  <i id="port_fleet_ship_2_cond_icon" class="fa fa-smile-o"></i>
+                  <span id="port_fleet_ship_2_cond_text">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2_exp">
+                  <span id="port_fleet_ship_2_exp_text"></span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2_slot_1">
+                  <span id="port_fleet_ship_2_slottext_1">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2_slot_2">
+                  <span id="port_fleet_ship_2_slottext_2">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2_slot_3">
+                  <span id="port_fleet_ship_2_slottext_3">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_2_slot_4">
+                  <span id="port_fleet_ship_2_slottext_4">N/A</span>
+                </a>
+              </div>
+              <div class="col-md-2">
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3">
+                  <span id="port_fleet_ship_3_name">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3_cond">
+                  <i id="port_fleet_ship_3_cond_icon" class="fa fa-smile-o"></i>
+                  <span id="port_fleet_ship_3_cond_text">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3_exp">
+                  <span id="port_fleet_ship_3_exp_text"></span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3_slot_1">
+                  <span id="port_fleet_ship_3_slottext_1">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3_slot_2">
+                  <span id="port_fleet_ship_3_slottext_2">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3_slot_3">
+                  <span id="port_fleet_ship_3_slottext_3">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_3_slot_4">
+                  <span id="port_fleet_ship_3_slottext_4">N/A</span>
+                </a>
+              </div>
+              <div class="col-md-2">
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4">
+                  <span id="port_fleet_ship_4_name">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4_cond">
+                  <i id="port_fleet_ship_4_cond_icon" class="fa fa-smile-o"></i>
+                  <span id="port_fleet_ship_4_cond_text">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4_exp">
+                  <span id="port_fleet_ship_4_exp_text"></span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4_slot_1">
+                  <span id="port_fleet_ship_4_slottext_1">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4_slot_2">
+                  <span id="port_fleet_ship_4_slottext_2">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4_slot_3">
+                  <span id="port_fleet_ship_4_slottext_3">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_4_slot_4">
+                  <span id="port_fleet_ship_4_slottext_4">N/A</span>
+                </a>
+              </div>
+              <div class="col-md-2">
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5">
+                  <span id="port_fleet_ship_5_name">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5_cond">
+                  <i id="port_fleet_ship_5_cond_icon" class="fa fa-smile-o"></i>
+                  <span id="port_fleet_ship_5_cond_text">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5_exp">
+                  <span id="port_fleet_ship_5_exp_text"></span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5_slot_1">
+                  <span id="port_fleet_ship_5_slottext_1">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5_slot_2">
+                  <span id="port_fleet_ship_5_slottext_2">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5_slot_3">
+                  <span id="port_fleet_ship_5_slottext_3">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_5_slot_4">
+                  <span id="port_fleet_ship_5_slottext_4">N/A</span>
+                </a>
+              </div>
+              <div class="col-md-2">
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6">
+                  <span id="port_fleet_ship_6_name">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6_cond">
+                  <i id="port_fleet_ship_6_cond_icon" class="fa fa-smile-o"></i>
+                  <span id="port_fleet_ship_6_cond_text">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6_exp">
+                  <span id="port_fleet_ship_6_exp_text"></span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6_slot_1">
+                  <span id="port_fleet_ship_6_slottext_1">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6_slot_2">
+                  <span id="port_fleet_ship_6_slottext_2">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6_slot_3">
+                  <span id="port_fleet_ship_6_slottext_3">N/A</span>
+                </a>
+                <a class="list-group-item list-group-item-default" id="port_fleet_ship_6_slot_4">
+                  <span id="port_fleet_ship_6_slottext_4">N/A</span>
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        <!-- Battle -->
+        <div class="tab-pane" id="tab_battle">
+          <!-- our fleet -->
+          <h3>&nbsp;<span class="label label-primary" id="our_fleet_name">Our Fleet</span></h3>
+          <div class="container-fluid">
+            <div class="row">
+
+              <div class="col-md-2">
+                <div class="panel panel-default" id="our_fleet_1">
+                  <div class="panel-heading">
+                    <i id='our_fleet_icon_1'></i>
+                    <span id="our_fleet_ship_1">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="our_fleet_2">
+                  <div class="panel-heading">
+                    <i id='our_fleet_icon_2'></i>
+                    <span id="our_fleet_ship_2">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="our_fleet_3">
+                  <div class="panel-heading">
+                    <i id='our_fleet_icon_3'></i>
+                    <span id="our_fleet_ship_3">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="our_fleet_4">
+                  <div class="panel-heading">
+                    <i id='our_fleet_icon_4'></i>
+                    <span id="our_fleet_ship_4">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="our_fleet_5">
+                  <div class="panel-heading">
+                    <i id='our_fleet_icon_5'></i>
+                    <span id="our_fleet_ship_5">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="our_fleet_6">
+                  <div class="panel-heading">
+                    <i id='our_fleet_icon_6'></i>
+                    <span id="our_fleet_ship_6">N/A</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!-- enemy fleet -->
+            <div class="row">
+              <h3>&nbsp;<span class="label label-danger" id="enemy_fleet_name">Enemy Fleet</span></h3>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="enemy_fleet_1">
+                  <div class="panel-heading">
+                    <i id='enemy_fleet_icon_1'></i>
+                    <span id="enemy_fleet_ship_1">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="enemy_fleet_2">
+                  <div class="panel-heading">
+                    <i id='enemy_fleet_icon_2'></i>
+                    <span id="enemy_fleet_ship_2">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="enemy_fleet_3">
+                  <div class="panel-heading">
+                    <i id='enemy_fleet_icon_3'></i>
+                    <span id="enemy_fleet_ship_3">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="enemy_fleet_4">
+                  <div class="panel-heading">
+                    <i id='enemy_fleet_icon_4'></i>
+                    <span id="enemy_fleet_ship_4">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="enemy_fleet_5">
+                  <div class="panel-heading">
+                    <i id='enemy_fleet_icon_5'></i>
+                    <span id="enemy_fleet_ship_5">N/A</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="panel panel-default" id="enemy_fleet_6">
+                  <div class="panel-heading">
+                    <i id='enemy_fleet_icon_6'></i>
+                    <span id="enemy_fleet_ship_6">N/A</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Statistics -->
+        <div class="tab-pane" id="tab_statistics">
+
+          <div class="container" id="ship_table_container">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="ship_table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Level</th>
+                  <th>HP</th>
+                  <th>Condition</th>
+                  <th>slot 1</th>
+                  <th>slot 2</th>
+                  <th>slot 3</th>
+                  <th>slot 4</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+        </div>
+        <!-- Log -->
+        <div class="tab-pane" id="tab_log">
+          <a>&nbsp;</a>
+          <div class="btn-group">
+            <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown">Catalogue 
+            <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a><i class="fa fa-wrench"></i> Item Creation</a></li>
+                <li><a><i class="fa fa-ship"></i> Construction</a></li>
+                <li><a><i class="fa fa-anchor"></i> Battle</a></li>
+                <li class="divider"></li>
+            </ul>
+          </div>
+          
+          <div class="container" id="create_item_table_container" style="display: none;">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="create_item_table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Flagship</th>
+                  <th><i class="fa fa-tint"></i></th>
+                  <th><i class="fa fa-rocket"></i></th>
+                  <th><i class="fa fa-cubes"></i></span></th>
+                  <th><i class="fa fa-plane"></i></th>
+                  <th>Name</th>
+                  <th>ID</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="container" id="construction_table_container" style="display: none;">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="construction_table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Flagship</th>
+                  <th><i class="fa fa-tint"></i></th>
+                  <th><i class="fa fa-rocket"></i></th>
+                  <th><i class="fa fa-cubes"></i></span></th>
+                  <th><i class="fa fa-plane"></i></th>
+                  <th><i class="fa fa-wrench"></i></th>
+                  <th>Name</th>
+                  <th>ID</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="container" id="battle_table_container" style="display: none;">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="battle_table">
+              <thead>
+                <tr>
+                  <th>Time</th><th>Map</th><th>Result</th><th>Get</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+        </div>
+        <!-- Setting -->
+        <div class="tab-pane" id="tab_setting">
+          <h3>&nbsp;<i class="fa fa-taxi"></i> Auto Tab Switching</h3>
+          <p>&nbsp;<input type="checkbox" aria-label="..." id="autoSwitchPort"> Auto switch to port</p>
+          <p>&nbsp;<input type="checkbox" aria-label="..." id="autoSwitchBattle"> Auto switch to battle</p>
+          <h3>&nbsp;<i class="fa fa-exchange"></i> Data Exchange</h3>
+          <a>&nbsp;</a>
+          <span class="btn btn-primary" id="dumpBtn" data-loading-text="Dumping..." autocomplete="off"><i class="glyphicon glyphicon-floppy-save"></i> Dump</span>
+          <span class="btn btn-default" id="loadBtn"><i class="glyphicon glyphicon-floppy-open"></i> Load</span>
+
+        </div>
+        <!-- Info -->
+        <div class="tab-pane" id="tab_info">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xs-4 col-md-3">
+                <a class="thumbnail">
+                  <div class="caption">
+                    <h3> KanColle Logbook </h3>
+                    <img src="./icons/128x128.png" alt="./icons/48x48.png">
+                  </div>
+                </a>
+              </div>
+
+              <div class="col-md-8">
+                <div class="list-group">
+                  <a class="list-group-item list-group-item-success">Version <span class="badge" id="badge_version"></span></a>
+                  <a class="list-group-item list-group-item-info">Author <span class="badge" id="badge_author">MG</span></a>
+                  <a class="list-group-item list-group-item-warning">EMail <span class="badge" id="badge_mail">kclogbook@163.com</span></a>
+                  <a class="list-group-item list-group-item-danger">
+                  <p>Kancolle Logbook is a tool designed for web flash game 艦隊これくしょん～艦これ～™</p>
+                  <h5>PRIVACY POLICY</h5>
+                  <p>1. We don’t collect any of your personal info, including your IP address, other than information you voluntarily provide.</p>
+                  <p>2. We don’t sell your personal info to advertisers or other third parties.</p>
+                  <p>3. We don't modify your network data.</p>
+                  <h5>DISCLAIMER</h5>
+                  <p>THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL LOGBOOK, THE AUTHOR, OR ANY OF THEIR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+                  <h5>TRADEMARKS</h5>
+                  <p>艦隊これくしょん～艦これ～ is a registered trademark of DMM.com/POWERCHORD STUDIO/C2/KADOKAWA</p>
+                  <h5>LICENSE</h5>
+                  <p>Copyright ©2015 Logbook.</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="./libs/jquery-2.1.3.min.js"></script>
+    <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <script src="./libs/datatables/jquery.dataTables.min.js"></script>
+    <script src="./libs/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="./libs/datatables/dataTables.bootstrap.js"></script>
+    <!-- index -->
+    <!--
+    <script src="./raw.js"></script>
+    <script src="./background.js"></script>
+    <script src="./scripts/logbook.js"></script>
+    <script src="./scripts/lbkeys.js"></script>
+    <script src="./scripts/lbcontext.js"></script>
+    <script src="./scripts/lbdispatch.js"></script>
+    <script src="./scripts/lbmanifest.js"></script>
+    <script src="./scripts/lbrecord.js"></script>
+    <script src="./scripts/lbsetting.js"></script>
+    <script src="./scripts/lbbattle.js"></script>
+    <script src="./scripts/chrome_interface.js"></script>
+    -->
+  </body>
+</html>

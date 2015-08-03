@@ -7,14 +7,24 @@ Logbook 是一个解析网页游戏 舰队Collection 网络数据以方便玩家
 
 要在 Chrome 浏览器上使用 Logbook :
 
-1. 从Github上下载压缩文件`Download ZIP`，并解压
+**安装**
+
+1. 从Github上下载(`Download ZIP`)压缩文件，并解压
 2. 在浏览器设置(`Settings`)中的扩展程序(`Extensions`)里启用开发者模式(`Developer mode`)
-3. 加载未打包的扩展应用(`Load unpacked extension...`)
-4. 如果插件是已经打包好的 `.crx` 格式，直接双击安装即可
+3. 加载未打包的扩展应用(`Load unpacked extension...`)，选择解压出来的 `Logbook` 文件夹
+4. 如果您想安装已经打包好的 `.crx` 格式插件，双击`Logbook.crx`安装即可
+
+**启用**
+
 5. 在浏览器页面右键选择审查元素(`Inspect Element`)
 6. 也可以经由浏览器菜单中的 更多工具(`More tools`) 中的 开发者工具(`Developer Tools`) 访问
 7. 点击 Logbook 选项卡， Logbook 即可开始工作
 8. 为了能使插件正常，你可能需要重新刷新游戏页面
+
+**卸载**
+
+1. 在浏览器设置(`Settings`)中的扩展程序(`Extensions`)，点击Logbook右侧对应的垃圾桶即可卸载
+2. 您也可以通过右键点击Chrome上的Logbook图标，选择 从Chrome中移除(`Remove from Chrome`)
 
 ---
 

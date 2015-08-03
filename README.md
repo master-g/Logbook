@@ -71,4 +71,5 @@ Logbook 通过分析游戏flash与服务器之间的通信数据，将一些细�
 
 当前版本: 0.9.1  
 开发者: MG  
+新浪微博: http://weibo.com/codesmith  
 E-mail: kclogbook@163.com  

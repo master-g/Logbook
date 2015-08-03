@@ -652,13 +652,14 @@ LBLogTab.prototype = {
   },
 
   setRecord: function(records) {
+    var i, record;
     var date = new Date();
 
     // create item table
     var createitem = records.createitem;
     this.itemTable.clear();
-    for (var i in createitem) {
-      var record = createitem[i];
+    for (i in createitem) {
+      record = createitem[i];
       date.setTime(record.time);
       this.itemTable.row.add([
         LBUtil.StringifyDate(date),
@@ -676,8 +677,8 @@ LBLogTab.prototype = {
     // construction table
     var ships = records.createship;
     this.shipTable.clear();
-    for (var i in ships) {
-      var record = ships[i];
+    for (i in ships) {
+      record = ships[i];
       date.setTime(record.createtime);
 
       this.shipTable.row.add([
@@ -697,8 +698,8 @@ LBLogTab.prototype = {
     // battle table
     var battles = records.battle;
     this.battleTable.clear();
-    for (var i in battles) {
-      var record = battles[i];
+    for (i in battles) {
+      record = battles[i];
       date.setTime(record.time);
 
       this.battleTable.row.add([
@@ -1067,8 +1068,6 @@ $('#autoSwitchPort').click(function() {
   }
 
   LBSetting.getInstance().save();
-
-  $.notify("Hello World.", "success");
 });
 
 $('#autoSwitchBattle').click(function() {
@@ -1084,8 +1083,10 @@ $('#autoSwitchBattle').click(function() {
 $('#notificationCheckbox').click(function() {
   if ($(this).is(':checked')) {
     LBSetting.getInstance().settings.allowNotification = true;
+    $.notify("Notification enabled.", "success");
   } else {
     LBSetting.getInstance().settings.allowNotification = false;
+    $.notify("Notification disabled.", "success");
   }
 
   LBSetting.getInstance().save();
@@ -1108,6 +1109,7 @@ $('#loadBtn').on('click', function() {
 });
 
 $('#clearBtn').on('click', function() {
+  // TODO: add confirm dialog here
   LBRecord.getInstance().clear();
 });
 

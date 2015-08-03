@@ -1,3 +1,37 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2015 Master.G
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/*
+ *  lbbattle.js
+ *  KCLogbook
+ *
+ *  Battle analyze module
+ *
+ *  Created by Master.G on 2015/8/3.
+ *  Copyright (c) 2015 Master.G. All rights reserved.
+ */
+
 LBBattle = function() {
 
 };
@@ -60,9 +94,11 @@ LBBattle.prototype = {
 
 		// get fleet ship info
 		var i = 0;
+		var j = 0;
+		var ship = {};
 		for (i = 0; i < ourShipID.length; i++) {
 			if (ourShipID[i] !== -1) {
-				var ship = {};
+				ship = {};
 				ship.id = ourShipID[i];
 				ship.ship_id = context.ships[ship.id].ship_id;
 				ship.name = LBManifest.getInstance().getShip(ship.ship_id).name;
@@ -71,7 +107,7 @@ LBBattle.prototype = {
 
 				// get slot info
 				ship.slot = context.ships[ship.id].slot.slice(0);
-				for (var j in ship.slot) {
+				for (j in ship.slot) {
 					var itemId = ship.slot[j];
 					if (itemId != -1) {
 						var slotitem_id = context.slotitem[itemId].slotitem_id;
@@ -88,7 +124,7 @@ LBBattle.prototype = {
 
 		// find enemy id start index (almost 7)
 		var enemyIndex = 0;
-		for (var j = i; j < nowHPs.length; i++) {
+		for (j = i; j < nowHPs.length; i++) {
 			if (nowHPs[j] !== -1) {
 				enemyIndex = j;
 				break;
@@ -96,9 +132,9 @@ LBBattle.prototype = {
 		}
 
 		// get enemy info
-		for (var j = 0; j < enemyShipID.length; j++) {
+		for (j = 0; j < enemyShipID.length; j++) {
 			if (enemyShipID[j] !== -1) {
-				var ship = {};
+				ship = {};
 				ship.id = j;
 				ship.ship_id = enemyShipID[j];
 				ship.name = LBManifest.getInstance().getShip(ship.ship_id).name;
@@ -116,10 +152,10 @@ LBBattle.prototype = {
 
 		// get enemy slot info
 		if (data[KCK.ESLOT]) {
-			for (var i = 0; i < info.enemyShips.length; i++) {
+			for (i = 0; i < info.enemyShips.length; i++) {
 				var s = info.enemyShips[i];
 				var slot = data[KCK.ESLOT][i];
-				for (var j in slot) {
+				for (j in slot) {
 					var slotitem_id = slot[j];
 					if (slotitem_id != -1) {
 						s.slot.push(LBManifest.getInstance().getSlotItem(slotitem_id).name);
@@ -153,12 +189,13 @@ LBBattle.prototype = {
 				var our_plane = plane_from[0].slice(0);
 				var enemy_plane = plane_from[1].slice(0);
 				// TODO, design data scheme
-				for (var i in our_plane) {
+				var i = 0;
+				for (i in our_plane) {
 					if (our_plane[i] != -1) {
 						report.phase_air.our.push(shipMap[our_plane[i]].name);
 					}
 				}
-				for (var i in enemy_plane) {
+				for (i in enemy_plane) {
 					if (enemy_plane[i] != -1) {
 						report.phase_air.enemy.push(shipMap[enemy_plane[i]].name);
 					}
@@ -176,11 +213,12 @@ LBBattle.prototype = {
 		ed.shift();
 		fd.shift();
 
-		for (var i = 0; i < ourDamage.length; i++) {
+		var i;
+		for (i = 0; i < ourDamage.length; i++) {
 			ourDamage[i] += fd[i];
 		}
 
-		for (var i = 0; i < enemyDamage.length; i++) {
+		for (i = 0; i < enemyDamage.length; i++) {
 			enemyDamage[i] += ed[i];
 		}
 	},

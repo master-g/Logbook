@@ -3,6 +3,16 @@ a chrome plugin for kancolle the flash web game
 
 ---
 
+**2015-8-8 `重要`**  
+
+尊敬的各位提督，由于2015年夏活即将带来的游戏改动，包括但不限于：新舰种，新机制，新数据等  
+
+有可能导致KCLogbook无法正常显示数据，我会在活动开始后尽快开始插件的相关修改和更新工作  
+
+在此期间为了尽量避免不必要的损失，请谨慎使用KCLogbook，祝您夏活顺利，捞船愉快 !
+
+---
+
 Logbook 是一个解析网页游戏 舰队Collection 网络数据以方便玩家了解游戏信息的 Chrome 浏览器插件
 
 要在 Chrome 浏览器上使用 Logbook :

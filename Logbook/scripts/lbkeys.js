@@ -251,6 +251,7 @@ KCK.EXP = "api_exp";
 KCK.COND = "api_cond";
 KCK.SLOT = "api_slot";
 KCK.ESLOT = "api_eSlot";
+KCK.SLOT_EX = "api_slot_ex";
 KCK.NOWHPS_COMBINED = "api_nowhps_combined";
 KCK.MAXHPS_COMBINED = "api_maxhps_combined";
 KCK.STAGE3_COMBINED = "api_stage3_combined";

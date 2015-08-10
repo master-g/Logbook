@@ -485,11 +485,15 @@ LBPortTab.prototype = {
         $(cond_tag).addClass('list-group-item list-group-item-success');
       }
 
-      for (var j = 1; j < 6; j++) {
+      for (var j = 1; j < 5; j++) {
         $(ship_tag + '_slottext_' + j).html(ship.slot[j - 1] || 'N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass(ship.slot[j - 1] ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
       }
+
+      $(ship_tag + '_slottext_' + 5).html(ship.slotex || 'N/A');
+      $(ship_tag + '_slot_' + 5).removeClass();
+      $(ship_tag + '_slot_' + 5).addClass(ship.slotex ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
     }
   }
 };
@@ -657,10 +661,11 @@ LBStatTab.prototype = {
       var hp = data[i].nowhp + '/' + data[i].maxhp;
       var cond = data[i].condition + '/100';
       var slot = [];
+      var slotex, item;
       for (var j in data[i].slot) {
         var slotitemId = data[i].slot[j];
         if (slotitemId != -1) {
-          var item = LBContext.getInstance().slotitem[slotitemId];
+          item = LBContext.getInstance().slotitem[slotitemId];
           if (item)
             slot.push(LBManifest.getInstance().getSlotItem(item.slotitem_id).name);
           else
@@ -669,8 +674,15 @@ LBStatTab.prototype = {
           slot.push('N/A');
         }
       }
+      slotex = data[i].slotex;
+      if (slotex !== 0) {
+        item = LBContext.getInstance().slotitem[slotex];
+        slotex = LBManifest.getInstance().getSlotItem(item.slotitem_id).name;
+      } else {
+        slotex = 'N/A';
+      }
       this.shipTable.row.add([
-        id, name, type, lv, hp, cond, slot[0], slot[1], slot[2], slot[3], slot[4]
+        id, name, type, lv, hp, cond, slot[0], slot[1], slot[2], slot[3], slotex
       ]);
     }
     this.shipTable.draw();

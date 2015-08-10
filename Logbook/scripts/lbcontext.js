@@ -182,6 +182,7 @@ LBContext.prototype = {
       ship.lvupexp = info[KCK.EXP][1];
       ship.condition = info[KCK.COND];
       ship.slot = info[KCK.SLOT].slice(0);
+      ship.slotex = info[KCK.SLOT_EX];
 
       ship.realhp = ship.nowhp;
       this.ships[ship.id] = ship;
@@ -381,6 +382,14 @@ LBContext.prototype = {
         var slotitem_id = this.slotitem[itemId].slotitem_id;
         var itemName = LBManifest.getInstance().getSlotItem(slotitem_id).name;
         ship.slot.push(itemName);
+      }
+
+      if (s.slotex !== 0) {
+        var exslot_id = this.slotitem[s.slotex].slotitem_id;
+        var exname = LBManifest.getInstance().getSlotItem(exslot_id).name;
+        ship.slotex = exname;
+      } else {
+        ship.slotex = 0;
       }
 
       ships.push(ship);

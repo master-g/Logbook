@@ -5,6 +5,8 @@ a chrome plugin for kancolle the flash web game
 
 **2015-8-10 `重要`**  
 
+修复了第5格装备显示错误的bug，万分抱歉！  
+
 更新了舰娘装备槽的解析与显示，舰娘现在最大能够搭载5个格子的装备  
 
 下一步将`考虑`更新舰载机熟练度的相关显示信息  
@@ -112,7 +114,7 @@ Logbook 通过分析游戏flash与服务器之间的通信数据，将一些细�
 
 为了能及时获取版本更新等信息，您可以选择关注我的微博或是`watch`这个项目
 
-当前版本: 0.9.2  
+当前版本: 0.9.3  
 开发者: MG  
 新浪微博: http://weibo.com/codesmith  
 E-mail: kclogbook@163.com  

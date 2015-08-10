@@ -170,16 +170,16 @@ gDispatchTable[K_API_BATTLE_RESULT]         = proc_api_battle_result;
 
 function do_test() {
   try {
-    var d = JSON.parse(raw_combined_water)[KCK.DATA];
-    LBBattle.getInstance().inspectCombinedBattleWater(d);
+    var d = JSON.parse(raw_port)[KCK.DATA];
+    LBContext.getInstance().updateShips(d[KCK.SHIP]);
   } catch (e) {
     Console.log('hi');
-    Console.e(e.message);
-    Console.e(e.name);
-    Console.e(e.fileName);
-    Console.e(e.lineNumber);
-    Console.e(e.columnNumber);
-    Console.e(e.stack);
+    Console.log(e.message);
+    Console.log(e.name);
+    Console.log(e.fileName);
+    Console.log(e.lineNumber);
+    Console.log(e.columnNumber);
+    Console.log(e.stack);
   }
 }
 
@@ -214,7 +214,18 @@ function dispatchURL(path, content, obj) {
       evil = obj.request.postData.params;
 
     // dispatch
-    gDispatchTable[comp[1]](json, evil);
+    try {
+      gDispatchTable[comp[1]](json, evil);
+      // LBContext.getInstance().updateShips(data[KCK.SHIP]);
+    } catch (e) {
+      Console.log(e.message);
+      Console.log(e.name);
+      Console.log(e.fileName);
+      Console.log(e.lineNumber);
+      Console.log(e.columnNumber);
+      Console.log(e.stack);
+    }
+    // gDispatchTable[comp[1]](json, evil);
 
     Console.info("Logbook | " + comp[1] + " dispatched.");
   }

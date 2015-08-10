@@ -1,6 +1,6 @@
 {
 	"name": "Kancolle Logbook",
-	"version": "0.9.2",
+	"version": "0.9.3",
 	"minimum_chrome_version": "22.0",
 	"description": "Log and Analyze",
 	"manifest_version": 2,

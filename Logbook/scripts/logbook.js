@@ -422,7 +422,7 @@ LBPortTab.prototype = {
       $(cond_tag).removeClass();
       $(cond_tag).addClass('list-group-item list-group-item-default');
 
-      for (var j = 1; j < 5; j++) {
+      for (var j = 1; j < 6; j++) {
         $(ship_tag + '_slottext_' + j).html('N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass('list-group-item list-group-item-default');
@@ -433,14 +433,15 @@ LBPortTab.prototype = {
   setFleet: function(idx, fleet) {
     this.clearFleet();
 
-    for (var i = 1; i < 5; i++) {
+    var i;
+    for (i = 1; i < 5; i++) {
       $('#port_fleet_' + i).removeClass();
     }
 
     $('#port_fleet_' + idx).addClass('active');
 
     var prefix = '#port_fleet_ship_';
-    for (var i = 0; i < fleet.length; i++) {
+    for (i = 0; i < fleet.length; i++) {
       var ship = fleet[i];
       var ship_tag = prefix + (i + 1);
       var name_tag = ship_tag + '_name';
@@ -484,7 +485,7 @@ LBPortTab.prototype = {
         $(cond_tag).addClass('list-group-item list-group-item-success');
       }
 
-      for (var j = 1; j < 5; j++) {
+      for (var j = 1; j < 6; j++) {
         $(ship_tag + '_slottext_' + j).html(ship.slot[j - 1] || 'N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass(ship.slot[j - 1] ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
@@ -513,11 +514,12 @@ LBBattleTab.prototype = {
   },
 
   clearOurFleet: function() {
+    var i, tag, shipTag, iconTag;
     var prefix = '#our_fleet_';
-    for (var i = 1; i <= 6; i++) {
-      var tag = prefix + i;
-      var shipTag = prefix + 'ship_' + i;
-      var iconTag = prefix + 'icon_' + i;
+    for (i = 1; i <= 6; i++) {
+      tag = prefix + i;
+      shipTag = prefix + 'ship_' + i;
+      iconTag = prefix + 'icon_' + i;
       $(shipTag).text('N/A');
       $(tag).removeClass();
       $(tag).addClass('panel panel-default');
@@ -525,10 +527,10 @@ LBBattleTab.prototype = {
     }
 
     prefix = '#combined_fleet_';
-    for (var i = 1; i <= 6; i++) {
-      var tag = prefix + i;
-      var shipTag = prefix + 'ship_' + i;
-      var iconTag = prefix + 'icon_' + i;
+    for (i = 1; i <= 6; i++) {
+      tag = prefix + i;
+      shipTag = prefix + 'ship_' + i;
+      iconTag = prefix + 'icon_' + i;
       $(shipTag).text('N/A');
       $(tag).removeClass();
       $(tag).addClass('panel panel-default');
@@ -668,7 +670,7 @@ LBStatTab.prototype = {
         }
       }
       this.shipTable.row.add([
-        id, name, type, lv, hp, cond, slot[0], slot[1], slot[2], slot[3]
+        id, name, type, lv, hp, cond, slot[0], slot[1], slot[2], slot[3], slot[4]
       ]);
     }
     this.shipTable.draw();

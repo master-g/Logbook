@@ -675,7 +675,7 @@ LBStatTab.prototype = {
         }
       }
       slotex = data[i].slotex;
-      if (slotex !== 0) {
+      if (slotex !== 0 && slotex !== -1) {
         item = LBContext.getInstance().slotitem[slotex];
         slotex = LBManifest.getInstance().getSlotItem(item.slotitem_id).name;
       } else {

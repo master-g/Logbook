@@ -384,7 +384,7 @@ LBContext.prototype = {
         ship.slot.push(itemName);
       }
 
-      if (s.slotex !== 0) {
+      if (s.slotex !== 0 && s.slotex !== -1) {
         var exslot_id = this.slotitem[s.slotex].slotitem_id;
         var exname = LBManifest.getInstance().getSlotItem(exslot_id).name;
         ship.slotex = exname;

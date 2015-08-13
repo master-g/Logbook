@@ -129,6 +129,7 @@ var K_API_COMBINE_BATTLE = "api_req_combined_battle/battle";
 var K_API_COMBINE_MIDNIGHT = "api_req_combined_battle/midnight_battle";
 var K_API_COMBINE_BATTLE_WATER = "api_req_combined_battle/battle_water";
 var K_API_COMBINE_SP_MIDNIGHT = "api_req_combined_battle/sp_midnight";
+var K_API_COMBINE_AIRBATTLE = "api_req_combined_battle/airbattle";  // TODO
 var K_API_BATTLE_RESULT = "api_req_sortie/battleresult";
 
 var gDispatchTable = {};
@@ -166,12 +167,13 @@ gDispatchTable[K_API_COMBINE_BATTLE]        = proc_api_combined_battle;
 gDispatchTable[K_API_COMBINE_MIDNIGHT]      = proc_api_combined_midnight;
 gDispatchTable[K_API_COMBINE_BATTLE_WATER]  = proc_api_combined_battle_water;
 gDispatchTable[K_API_COMBINE_SP_MIDNIGHT]   = proc_api_combined_sp_midnight;
+gDispatchTable[K_API_COMBINE_AIRBATTLE]     = proc_api_combined_airbattle;
 gDispatchTable[K_API_BATTLE_RESULT]         = proc_api_battle_result;
 
 function do_test() {
   try {
-    var d = JSON.parse(raw_port)[KCK.DATA];
-    LBContext.getInstance().updateShips(d[KCK.SHIP]);
+    var d = JSON.parse(raw_airbattle)[KCK.DATA];
+    LBBattle.getInstance().inspectCombinedAirBattle(d);
   } catch (e) {
     Console.log('hi');
     Console.log(e.message);
@@ -438,6 +440,10 @@ function proc_api_combined_battle_water(json, params) {
 
 function proc_api_combined_sp_midnight(json, params) {
   LBBattle.getInstance().inspectCombinedSPMidnightBattle(getData(json));
+}
+
+function proc_api_combined_airbattle(json, param) {
+  LBBattle.getInstance().inspectCombinedAirBattle(getData(json));
 }
 
 function proc_api_battle_result(json, params) {

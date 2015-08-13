@@ -96,6 +96,7 @@ LBBattle.prototype = {
     var i = 0;
     var j = 0;
     var ship = {};
+    var slotitem_id;
     for (i = 0; i < ourShipID.length; i++) {
       if (ourShipID[i] !== -1) {
         ship = {};
@@ -110,7 +111,7 @@ LBBattle.prototype = {
         for (j in ship.slot) {
           var itemId = ship.slot[j];
           if (itemId != -1) {
-            var slotitem_id = context.slotitem[itemId].slotitem_id;
+            slotitem_id = context.slotitem[itemId].slotitem_id;
             ship.slot[j] = LBManifest.getInstance().getSlotItem(slotitem_id).name;
           }
         }
@@ -156,7 +157,7 @@ LBBattle.prototype = {
         var s = info.enemyShips[i];
         var slot = data[KCK.ESLOT][i];
         for (j in slot) {
-          var slotitem_id = slot[j];
+          slotitem_id = slot[j];
           if (slotitem_id != -1) {
             s.slot.push(LBManifest.getInstance().getSlotItem(slotitem_id).name);
           }
@@ -315,8 +316,9 @@ LBBattle.prototype = {
       enemyShips[i].nowhp -= enemyTotalDamage[i];
     }
 
-    for (var j in damageObjArray) {
-      var p = damageObjArray[j];
+    var j, p, o, ship;
+    for (j in damageObjArray) {
+      p = damageObjArray[j];
       shipMap[p.target].nowhp -= p.damage;
     }
 
@@ -325,8 +327,8 @@ LBBattle.prototype = {
 
     // display result
     var desc = "";
-    for (var o in ourShips) {
-      var ship = ourShips[o];
+    for (o in ourShips) {
+      ship = ourShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     // Console.info("Logbook | " + desc);
@@ -334,7 +336,7 @@ LBBattle.prototype = {
 
     desc = "";
     for (var e in enemyShips) {
-      var ship = enemyShips[e];
+      ship = enemyShips[e];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     // Console.info("Logbook | " + desc);
@@ -371,8 +373,9 @@ LBBattle.prototype = {
 
     // display result
     var desc = "";
+    var ship;
     for (var o in ourShips) {
-      var ship = ourShips[o];
+      ship = ourShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     // Console.info("Logbook | " + desc);
@@ -380,7 +383,7 @@ LBBattle.prototype = {
 
     desc = "";
     for (var e in enemyShips) {
-      var ship = enemyShips[e];
+      ship = enemyShips[e];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     // Console.info("Logbook | " + desc);
@@ -424,14 +427,15 @@ LBBattle.prototype = {
     var damageObjArray = [];
 
     var phaseAirRaid = data[KCK.KOUKU];
+    var stage3;
     if (phaseAirRaid !== null && phaseAirRaid[KCK.STAGE3]) {
-      var stage3 = phaseAirRaid[KCK.STAGE3];
+      stage3 = phaseAirRaid[KCK.STAGE3];
       this.calculateSimpleDamage(ourTotalDamage, enemyTotalDamage, stage3);
     }
 
     phaseAirRaid = data[KCK.KOUKU2];
     if (phaseAirRaid !== null && phaseAirRaid[KCK.STAGE3]) {
-      var stage3 = phaseAirRaid[KCK.STAGE3];
+      stage3 = phaseAirRaid[KCK.STAGE3];
       this.calculateSimpleDamage(ourTotalDamage, enemyTotalDamage, stage3);
     }
 
@@ -454,8 +458,9 @@ LBBattle.prototype = {
 
     // display result
     var desc = "";
+    var ship;
     for (var o in ourShips) {
-      var ship = ourShips[o];
+      ship = ourShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     // Console.info("Logbook | " + desc);
@@ -463,7 +468,7 @@ LBBattle.prototype = {
 
     desc = "";
     for (var e in enemyShips) {
-      var ship = enemyShips[e];
+      ship = enemyShips[e];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     // Console.info("Logbook | " + desc);
@@ -614,13 +619,14 @@ LBBattle.prototype = {
       enemyShips[i].nowhp -= enemyTotalDamage[i];
     }
 
-    for (var j in damageObjArray) {
-      var p = damageObjArray[j];
+    var j, p, o;
+    for (j in damageObjArray) {
+      p = damageObjArray[j];
       shipMap[p.target].nowhp -= p.damage;
     }
 
-    for (var j in combinedDamageObjArr) {
-      var p = combinedDamageObjArr[j];
+    for (j in combinedDamageObjArr) {
+      p = combinedDamageObjArr[j];
       combinedShipMap[p.target].nowhp -= p.damage;
     }
 
@@ -631,22 +637,23 @@ LBBattle.prototype = {
 
     // display result
     var desc = "";
-    for (var o in ourShips) {
-      var ship = ourShips[o];
+    var ship;
+    for (o in ourShips) {
+      ship = ourShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
-    for (var o in combinedShips) {
-      var ship = combinedShips[o];
+    for (o in combinedShips) {
+      ship = combinedShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 
     desc = "";
     for (var e in enemyShips) {
-      var ship = enemyShips[e];
+      ship = enemyShips[e];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setEnemyFleet(enemyShips);
@@ -695,22 +702,23 @@ LBBattle.prototype = {
 
     // display result
     var desc = "";
-    for (var o in ourShips) {
-      var ship = ourShips[o];
+    var o, ship;
+    for (o in ourShips) {
+      ship = ourShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
-    for (var o in combinedShips) {
-      var ship = combinedShips[o];
+    for (o in combinedShips) {
+      ship = combinedShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 
     desc = "";
     for (var e in enemyShips) {
-      var ship = enemyShips[e];
+      ship = enemyShips[e];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setEnemyFleet(enemyShips);
@@ -814,13 +822,14 @@ LBBattle.prototype = {
       enemyShips[i].nowhp -= enemyTotalDamage[i];
     }
 
-    for (var j in damageObjArray) {
-      var p = damageObjArray[j];
+    var j, o, p, ship;
+    for (j in damageObjArray) {
+      p = damageObjArray[j];
       shipMap[p.target].nowhp -= p.damage;
     }
 
-    for (var j in combinedDamageObjArr) {
-      var p = combinedDamageObjArr[j];
+    for (j in combinedDamageObjArr) {
+      p = combinedDamageObjArr[j];
       combinedShipMap[p.target].nowhp -= p.damage;
     }
 
@@ -831,22 +840,130 @@ LBBattle.prototype = {
 
     // display result
     var desc = "";
-    for (var o in ourShips) {
-      var ship = ourShips[o];
+    for (o in ourShips) {
+      ship = ourShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
-    for (var o in combinedShips) {
-      var ship = combinedShips[o];
+    for (o in combinedShips) {
+      ship = combinedShips[o];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 
     desc = "";
     for (var e in enemyShips) {
-      var ship = enemyShips[e];
+      ship = enemyShips[e];
+      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+    }
+    LogbookWeb.getTab().getBattleTab().setEnemyFleet(enemyShips);
+  },
+
+  inspectCombinedAirBattle: function(data) {
+    var info = this.buildFleetInfo(data);
+    var combinedInfo = this.buildCombinedFleetInfo(data);
+
+    var ourShips = [];
+    var enemyShips = [];
+    var shipMap = {};
+    var combinedShips = [];
+    var combinedShipMap = {};
+
+    ourShips = info.ourShips;
+    enemyShips = info.enemyShips;
+    shipMap = info.ships;
+    combinedShips = combinedInfo.combinedShips;
+    combinedShipMap = combinedInfo.ships;
+    LogbookWeb.getTab().getBattleTab().setOurFleetName(info.ourFleetName);
+
+    // copy enemy ships into combined ship map
+    for (var i in info.enemies) {
+      combinedShipMap[i] = info.enemies[i];
+    }
+
+    // calculate damage
+    var ourTotalDamage = [];
+    var combinedTotalDamage = [];
+    var enemyTotalDamage = [];
+
+    for (i = 0; i < ourShips.length; i++) {
+      ourTotalDamage[i] = 0;
+    }
+
+    for (i = 0; i < combinedShips.length; i++) {
+      combinedTotalDamage[i] = 0;
+    }
+
+    for (i = 0; i < enemyShips.length; i++) {
+      enemyTotalDamage[i] = 0;
+    }
+
+    // air-raid phase
+    var stage3, stage3_combined;
+    var phaseAirRaid = data[KCK.KOUKU];
+    if (phaseAirRaid && phaseAirRaid[KCK.STAGE3]) {
+      stage3 = phaseAirRaid[KCK.STAGE3];
+      this.calculateSimpleDamage(ourTotalDamage, enemyTotalDamage, stage3);
+    }
+
+    if (phaseAirRaid && phaseAirRaid[KCK.STAGE3_COMBINED]) {
+      stage3_combined = phaseAirRaid[KCK.STAGE3_COMBINED];
+      this.calculateCombinedSimpleDamage(combinedTotalDamage, stage3_combined);
+    }
+
+    // air-raid phase 2
+    var phaseAirRaid2 = data[KCK.KOUKU2];
+    if (phaseAirRaid2 && phaseAirRaid2[KCK.STAGE3]) {
+      stage3 = phaseAirRaid2[KCK.STAGE3];
+      this.calculateSimpleDamage(ourTotalDamage, enemyTotalDamage, stage3);
+    }
+
+    if (phaseAirRaid2 && phaseAirRaid2[KCK.STAGE3_COMBINED]) {
+      stage3_combined = phaseAirRaid2[KCK.STAGE3_COMBINED];
+      this.calculateCombinedSimpleDamage(combinedTotalDamage, stage3_combined);
+    }
+
+    // TODO: support stage missing
+
+    // apply damage
+    for (i = 0; i < ourShips.length; i++) {
+      ourShips[i].nowhp -= ourTotalDamage[i];
+    }
+
+    for (i = 0; i < combinedShips.length; i++) {
+      combinedShips[i].nowhp -= combinedTotalDamage[i];
+    }
+
+    for (i = 0; i < enemyShips.length; i++) {
+      enemyShips[i].nowhp -= enemyTotalDamage[i];
+    }
+
+    // regulate HP
+    this.regulateHP(ourShips);
+    this.regulateHP(enemyShips);
+    this.regulateHP(combinedShips);
+
+    // display result
+    var desc = "";
+    var o, ship;
+    for (o in ourShips) {
+      ship = ourShips[o];
+      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+    }
+    LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
+
+    desc = "";
+    for (o in combinedShips) {
+      ship = combinedShips[o];
+      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+    }
+    LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
+
+    desc = "";
+    for (var e in enemyShips) {
+      ship = enemyShips[e];
       desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
     }
     LogbookWeb.getTab().getBattleTab().setEnemyFleet(enemyShips);

@@ -342,7 +342,7 @@ function proc_api_port(json, params) {
   }
 
   var fleet = LBContext.getInstance().getFleet(LBContext.getInstance().curFleet);
-  LogbookWeb.getTab().getPortTab().setFleet(LBContext.getInstance().curFleet, fleet);
+  LogbookWeb.getTab().getFleetTab().setFleet(LBContext.getInstance().curFleet, fleet);
 }
 
 function proc_api_material(json, params) {
@@ -360,7 +360,7 @@ function proc_api_ship2(json, params) {
     LBContext.getInstance().curFleet = 1;
   }
   var fleet = LBContext.getInstance().getFleet(LBContext.getInstance().curFleet);
-  LogbookWeb.getTab().getPortTab().setFleet(LBContext.getInstance().curFleet, fleet);
+  LogbookWeb.getTab().getFleetTab().setFleet(LBContext.getInstance().curFleet, fleet);
 }
 
 function proc_api_ship3(json, params) {
@@ -373,7 +373,7 @@ function proc_api_ship3(json, params) {
     LBContext.getInstance().curFleet = 1;
   }
   var fleet = LBContext.getInstance().getFleet(LBContext.getInstance().curFleet);
-  LogbookWeb.getTab().getPortTab().setFleet(LBContext.getInstance().curFleet, fleet);
+  LogbookWeb.getTab().getFleetTab().setFleet(LBContext.getInstance().curFleet, fleet);
 }
 
 function proc_api_next(json, params) {

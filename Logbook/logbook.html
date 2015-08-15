@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Logbook</title>
+  <title>KCLogbook</title>
 
   <!-- Bootstrap -->
   <link href="./libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -36,11 +36,12 @@
           <p>THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL LOGBOOK, THE AUTHOR, OR
             ANY OF THEIR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
             INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-            DAMAGE.</p>
+            DAMAGE.
+          </p>
           <h5>TRADEMARKS</h5>
           <p>艦隊これくしょん～艦これ～ is a registered trademark of DMM.com/POWERCHORD STUDIO/C2/KADOKAWA</p>
           <h5>LICENSE</h5>
-          <p>Copyright ©2015 Logbook.</p>
+          <p>Copyright ©2015 Master.G</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" id="agreementDeny" data-dismiss="modal">I Do Not Agree</button>
@@ -123,35 +124,42 @@
         </a>
       </li>
       <li>
-        <a href="#tab_battle" data-toggle="tab">
-          <i class="fa fa-anchor"></i> Battle
-          <span class="badge" id="badge_battle"></span>
+        <a href="#tab_fleet" data-toggle="tab">
+          <i class="fa fa-ship"></i> Fleet
+          <span class="badge" id="badge_fleet"></span>
         </a>
       </li>
       <li>
-        <a href="#tab_statistics" data-toggle="tab">
-          <i class="fa fa-bar-chart"></i> Statistics
-          <span class="badge" id="badge_statistics"></span>
-        </a>
-      </li>
-      <li>
-        <a href="#tab_log" data-toggle="tab">
-          <i class="fa fa-book"></i> Log
-          <span class="badge" id="badge_log"></span>
-        </a>
-      </li>
-      <li>
-        <a href="#tab_setting" data-toggle="tab">
-          <i class="fa fa-cog"></i> Setting
-          <span class="badge" id="badge_setting"></span>
-        </a>
-      </li>
-      <li>
-        <a href="#tab_info" data-toggle="tab">
-          <i class="fa fa-info-circle"></i> About
-          <span class="badge" id="badge_info"></span>
-        </a>
-      </li>
+        <li>
+          <a href="#tab_battle" data-toggle="tab">
+            <i class="fa fa-anchor"></i> Battle
+            <span class="badge" id="badge_battle"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#tab_statistics" data-toggle="tab">
+            <i class="fa fa-bar-chart"></i> Statistics
+            <span class="badge" id="badge_statistics"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#tab_log" data-toggle="tab">
+            <i class="fa fa-book"></i> Log
+            <span class="badge" id="badge_log"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#tab_setting" data-toggle="tab">
+            <i class="fa fa-cog"></i> Setting
+            <span class="badge" id="badge_setting"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#tab_info" data-toggle="tab">
+            <i class="fa fa-info-circle"></i> About
+            <span class="badge" id="badge_info"></span>
+          </a>
+        </li>
     </ul>
     <p></p>
     <div id="my-tab-content" class="tab-content">
@@ -412,15 +420,16 @@
             </div>
 
           </div>
+        </div>
 
+      </div>
+
+      <!-- Fleet -->
+      <div class="tab-pane" id="tab_fleet">
+        <div class="container-fluid">
           <!-- Fleet -->
           <nav>
             <ul class="pagination">
-              <li class="disabled">
-                <a aria-label="Previous">
-                  <span aria-hidden="true">Fleet</span>
-                </a>
-              </li>
               <li id="port_fleet_1"><a>1</a></li>
               <li id="port_fleet_2"><a>2</a></li>
               <li id="port_fleet_3"><a>3</a></li>
@@ -594,9 +603,10 @@
             </div>
 
           </div>
-
         </div>
       </div>
+      <!-- Fleet -->
+
       <!-- Battle -->
       <div class="tab-pane" id="tab_battle">
         <!-- our fleet -->
@@ -926,7 +936,7 @@
                   <h5>TRADEMARKS</h5>
                   <p>艦隊これくしょん～艦これ～ is a registered trademark of DMM.com/POWERCHORD STUDIO/C2/KADOKAWA</p>
                   <h5>LICENSE</h5>
-                  <p>Copyright ©2015 Logbook.</p>
+                  <p>Copyright ©2015 Master.G</p>
                 </a>
               </div>
             </div>

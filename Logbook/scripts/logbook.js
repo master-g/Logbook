@@ -501,6 +501,115 @@ LBPortTab.prototype = {
 LBPortTab.prototype.constructor = LBPortTab;
 
 // ----------------------------------------------
+// Fleet Tab
+// ----------------------------------------------
+LBFleetTab = function() {};
+
+LBFleetTab.prototype = {
+  clearFleet: function() {
+    var prefix = '#port_fleet_ship_';
+    for (var i = 1; i < 7; i++) {
+      var ship_tag = prefix + i;
+      var name_tag = ship_tag + '_name';
+      var exp_tag = ship_tag + '_exp';
+      var exptext_tag = ship_tag + '_exp_text';
+      var cond_tag = ship_tag + '_cond';
+      var condtext_tag = ship_tag + '_cond_text';
+      var condicon_tag = ship_tag + '_cond_icon';
+
+      $(ship_tag).removeClass();
+      $(ship_tag).addClass('list-group-item list-group-item-default');
+      $(name_tag).html('N/A');
+
+      $(exp_tag).removeClass();
+      $(exp_tag).addClass('list-group-item list-group-item-default');
+      $(exptext_tag).html('N/A');
+
+      $(condtext_tag).html('N/A');
+      $(condicon_tag).removeClass();
+      $(condicon_tag).addClass('fa fa-smile-o');
+      $(cond_tag).removeClass();
+      $(cond_tag).addClass('list-group-item list-group-item-default');
+
+      for (var j = 1; j < 6; j++) {
+        $(ship_tag + '_slottext_' + j).html('N/A');
+        $(ship_tag + '_slot_' + j).removeClass();
+        $(ship_tag + '_slot_' + j).addClass('list-group-item list-group-item-default');
+      }
+    }
+  },
+
+  setFleet: function(idx, fleet) {
+    this.clearFleet();
+
+    var i;
+    for (i = 1; i < 5; i++) {
+      $('#port_fleet_' + i).removeClass();
+    }
+
+    $('#port_fleet_' + idx).addClass('active');
+
+    var prefix = '#port_fleet_ship_';
+    for (i = 0; i < fleet.length; i++) {
+      var ship = fleet[i];
+      var ship_tag = prefix + (i + 1);
+      var name_tag = ship_tag + '_name';
+      var exp_tag = ship_tag + '_exp';
+      var exptext_tag = ship_tag + '_exp_text';
+      var cond_tag = ship_tag + '_cond';
+      var condicon_tag = ship_tag + '_cond_icon';
+      var condtext_tag = ship_tag + '_cond_text';
+      var itembg1_tag = ship_tag + '_slot_1';
+      var itembg2_tag = ship_tag + '_slot_2';
+      var itembg3_tag = ship_tag + '_slot_3';
+      var itembg4_tag = ship_tag + '_slot_4';
+      var item1_tag = ship_tag + '_slottext_1';
+      var item2_tag = ship_tag + '_slottext_2';
+      var item3_tag = ship_tag + '_slottext_3';
+      var item4_tag = ship_tag + '_slottext_4';
+
+      $(ship_tag).removeClass();
+      var percentage = Math.floor(ship.realhp / ship.maxhp * 100);
+      $(ship_tag).addClass('list-group-item list-group-item-' + LBUtil.PercentColor(percentage));
+
+      $(name_tag).html(ship.name + ' ' + ship.nowhp + '/' + ship.maxhp);
+      $(exp_tag).removeClass();
+      $(exp_tag).addClass('list-group-item list-group-item-info');
+      $(exptext_tag).html('Lv ' + ship.lv + ' ' + '<i class="fa fa-arrow-up"></i>' + ' ' + ship.lvupexp);
+
+      $(condicon_tag).removeClass();
+      $(cond_tag).removeClass();
+      $(condtext_tag).html(' ' + ship.condition + '/100');
+      if (ship.condition >= 50) {
+        $(condicon_tag).addClass('fa fa-star-o');
+        $(cond_tag).addClass('list-group-item list-group-item-info');
+      } else if (ship.condition < 30 && ship.condition > 20) {
+        $(condicon_tag).addClass('fa fa-frown-o');
+        $(cond_tag).addClass('list-group-item list-group-item-warning');
+      } else if (ship.condition <= 20) {
+        $(condicon_tag).addClass('fa fa-frown-o');
+        $(cond_tag).addClass('list-group-item list-group-item-danger');
+      } else {
+        $(condicon_tag).addClass('fa fa-smile-o');
+        $(cond_tag).addClass('list-group-item list-group-item-success');
+      }
+
+      for (var j = 1; j < 5; j++) {
+        $(ship_tag + '_slottext_' + j).html(ship.slot[j - 1] || 'N/A');
+        $(ship_tag + '_slot_' + j).removeClass();
+        $(ship_tag + '_slot_' + j).addClass(ship.slot[j - 1] ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
+      }
+
+      $(ship_tag + '_slottext_' + 5).html(ship.slotex || 'N/A');
+      $(ship_tag + '_slot_' + 5).removeClass();
+      $(ship_tag + '_slot_' + 5).addClass(ship.slotex ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
+    }
+  }
+};
+
+LBFleetTab.prototype.constructor = LBFleetTab;
+
+// ----------------------------------------------
 // Battle Tab
 // ----------------------------------------------
 LBBattleTab = function() {};
@@ -934,6 +1043,12 @@ LBTab.prototype = {
     }
     return this.portTab;
   },
+  getFleetTab: function() {
+    if (this.fleetTab === undefined) {
+      this.fleetTab = new LBFleetTab();
+    }
+    return this.fleetTab;
+  },
   getBattleTab: function() {
     if (this.battleTab === undefined) {
       this.battleTab = new LBBattleTab();
@@ -1041,29 +1156,25 @@ LogbookWeb.showExchangeLoadModal = function() {
 $('#port_fleet_1').on('click', function() {
   var fleet = LBContext.getInstance().getFleet(1);
   LBContext.getInstance().curFleet = 1;
-  LogbookWeb.getTab().getPortTab().setFleet(1, fleet);
-
+  LogbookWeb.getTab().getFleetTab().setFleet(1, fleet);
 });
 
 $('#port_fleet_2').on('click', function() {
   var fleet = LBContext.getInstance().getFleet(2);
   LBContext.getInstance().curFleet = 2;
-  LogbookWeb.getTab().getPortTab().setFleet(2, fleet);
-
+  LogbookWeb.getTab().getFleetTab().setFleet(2, fleet);
 });
 
 $('#port_fleet_3').on('click', function() {
   var fleet = LBContext.getInstance().getFleet(3);
   LBContext.getInstance().curFleet = 3;
-  LogbookWeb.getTab().getPortTab().setFleet(3, fleet);
-
+  LogbookWeb.getTab().getFleetTab().setFleet(3, fleet);
 });
 
 $('#port_fleet_4').on('click', function() {
   var fleet = LBContext.getInstance().getFleet(4);
   LBContext.getInstance().curFleet = 4;
-  LogbookWeb.getTab().getPortTab().setFleet(4, fleet);
-
+  LogbookWeb.getTab().getFleetTab().setFleet(4, fleet);
 });
 
 // agreements
@@ -1146,7 +1257,7 @@ $('#notificationCheckbox').click(function() {
 
 $('#dumpBtn').on('click', function() {
   var $btn = $(this).button('loading');
-    // business logic...
+  // business logic...
   var data = JSON.stringify(LBRecord.getInstance().dumpRecord());
   LogbookWeb.showExchangeDumpModal(data);
 
@@ -1155,7 +1266,7 @@ $('#dumpBtn').on('click', function() {
 
 $('#loadBtn').on('click', function() {
   var $btn = $(this).button('loading');
-    // business logic...
+  // business logic...
   LogbookWeb.showExchangeLoadModal();
   $btn.button('reset');
 });

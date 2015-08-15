@@ -86,7 +86,7 @@ LBContext.prototype = {
         LogbookWeb.getTab().getPortTab().setMaterial(data.level, data.materials);
         var fleet = LBContext.getInstance().getFleet(1);
         LBContext.getInstance().curFleet = 1;
-        LogbookWeb.getTab().getPortTab().setFleet(1, fleet);
+        LogbookWeb.getTab().getFleetTab().setFleet(1, fleet);
 
         LBContext.getInstance().updateShips(data.shipinfo);
 
@@ -403,8 +403,9 @@ LBContext.prototype = {
     var ship_id = 0;
     var deck_id = 0;
     var ship_idx = 0;
+    var i, fleet;
 
-    for (var i in data) {
+    for (i in data) {
       var name = unescape(data[i].name);
       var value = unescape(data[i].value);
 
@@ -426,8 +427,8 @@ LBContext.prototype = {
       var shouldSwap = false;
       var fid, idx;
 
-      for (var i in this.fleets) {
-        var fleet = this.fleets[i];
+      for (i in this.fleets) {
+        fleet = this.fleets[i];
         for (var j in fleet.ship) {
           if (fleet.ship[j] == ship_id) {
             fid = i;
@@ -447,15 +448,15 @@ LBContext.prototype = {
       if (this.curFleet === undefined) {
         this.curFleet = 1;
       }
-      var fleet = this.getFleet(this.curFleet);
-      LogbookWeb.getTab().getPortTab().setFleet(this.curFleet, fleet);
+      fleet = this.getFleet(this.curFleet);
+      LogbookWeb.getTab().getFleetTab().setFleet(this.curFleet, fleet);
     } else if (this.fleets[deck_id] !== undefined && ship_id === -2 && ship_idx === -1) {
       var ships = this.fleets[deck_id].ship;
-      for (var i = 1; i < ships.length; i++) {
+      for (i = 1; i < ships.length; i++) {
         ships[i] = -1;
       }
-      var fleet = this.getFleet(this.curFleet);
-      LogbookWeb.getTab().getPortTab().setFleet(this.curFleet, fleet);
+      fleet = this.getFleet(this.curFleet);
+      LogbookWeb.getTab().getFleetTab().setFleet(this.curFleet, fleet);
     }
   },
 

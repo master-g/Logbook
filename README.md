@@ -4,6 +4,8 @@ a chrome plugin for kancolle the flash web game
 ---
 **2015-8-16**  
 
+0.9.8 调整了界面，条目将不再堆叠  
+
 0.9.7 大破退避的舰娘现在在Battle页中的血量将显示为`Escaped`  
 
 0.9.6 舰队信息从Port中剥离，现在与Port和Battle页同级  

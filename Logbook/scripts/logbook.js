@@ -366,7 +366,8 @@ LBPortTab.prototype = {
       // time desc
       var time_desc = '';
       if (m >= max) {
-        time_desc = m;
+        // time_desc = m;
+        time_desc = 'MAX';
       } else {
         var time_require = max - m;
         time_require *= ((i === 3) ? 3 : 1);
@@ -387,7 +388,8 @@ LBPortTab.prototype = {
       // set
       percentage = Math.floor(percentage * 100);
       $(tag).css('width', percentage + '%');
-      $(tag).html(m >= max ? 'MAX' : percentage + '%');
+      $(tag).html(m >= max ? m : percentage + '%');
+      // $(tag).html(m >= max ? 'MAX' : percentage + '%');
     }
   },
 

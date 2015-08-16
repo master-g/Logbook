@@ -681,7 +681,11 @@ LBBattleTab.prototype = {
       var tagShip = prefix + 'ship_' + (i + 1);
       var iconTag = prefix + 'icon_' + (i + 1);
 
-      desc = ship.name + ' ' + ship.nowhp + '/' + ship.maxhp;
+      if (!ship.escaped) {
+        desc = ship.name + ' ' + ship.nowhp + '/' + ship.maxhp;
+      } else {
+        desc = ship.name + " Escaped";
+      }
       $(tagShip).text(desc);
 
       var percentage = ship.realhp / ship.maxhp;

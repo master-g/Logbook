@@ -258,3 +258,6 @@ KCK.STAGE3_COMBINED = "api_stage3_combined";
 
 // ship
 KCK.DATA_DECK = "api_data_deck";
+
+KCK.ESCAPE_IDX = "api_escape_idx";
+KCK.ESCAPE_IDX_COMBINED = "api_escape_idx_combined";

@@ -47,6 +47,38 @@ LBBattle.prototype = {
     }
   },
 
+  checkEscape: function(data, ourShips, combinedShips) {
+    var escaped = {};
+    if (data[KCK.ESCAPE_IDX]) {
+      escaped.first = data[KCK.ESCAPE_IDX].slice(0);
+    }
+
+    if (data[KCK.ESCAPE_IDX_COMBINED]) {
+      escaped.combined = data[KCK.ESCAPE_IDX_COMBINED].slice(0);
+    }
+
+    var i = 0;
+    var escapeID = 0;
+    if (escaped.first) {
+      for (i = 0; i < escaped.first.length; i++) {
+        escapeID = escaped.first[i];
+        if (ourShips[escapeID - 1]) {
+          ourShips[escapeID - 1].escaped = true;
+        }
+      }
+      Console.log(ourShips);
+    }
+
+    if (escaped.combined) {
+      for (i = 0; i < escaped.combined.length; i++) {
+        escapeID = escaped.combined[i];
+        if (combinedShips[escapeID - 1]) {
+          combinedShips[escapeID - 1].escaped = true;
+        }
+      }
+    }
+  },
+
   clear: function() {
     this.fleetID = undefined;
   },
@@ -105,7 +137,7 @@ LBBattle.prototype = {
         ship.name = LBManifest.getInstance().getShip(ship.ship_id).name;
         ship.nowhp = nowHPs[i];
         ship.maxhp = maxHPs[i];
-
+        ship.escaped = false;
         // get slot info
         ship.slot = context.ships[ship.id].slot.slice(0);
         for (j in ship.slot) {
@@ -505,7 +537,7 @@ LBBattle.prototype = {
       ship.maxhp = maxHPs.shift();
       ship.realhp = 0;
       ship.slot = ships[i].slot.slice(0);
-
+      ship.escaped = false;
       info.combinedShips.push(ship);
       info.ships[i + 1] = ship;
     }
@@ -635,19 +667,30 @@ LBBattle.prototype = {
     this.regulateHP(enemyShips);
     this.regulateHP(combinedShips);
 
+    // check escaped
+    this.checkEscape(data, ourShips, combinedShips);
+
     // display result
     var desc = "";
     var ship;
     for (o in ourShips) {
       ship = ourShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
     for (o in combinedShips) {
       ship = combinedShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 
@@ -700,19 +743,30 @@ LBBattle.prototype = {
     this.regulateHP(enemyShips);
     this.regulateHP(combinedShips);
 
+    // check escaped
+    this.checkEscape(data, ourShips, combinedShips);
+
     // display result
     var desc = "";
     var o, ship;
     for (o in ourShips) {
       ship = ourShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
     for (o in combinedShips) {
       ship = combinedShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 
@@ -838,18 +892,29 @@ LBBattle.prototype = {
     this.regulateHP(enemyShips);
     this.regulateHP(combinedShips);
 
+    // check escaped
+    this.checkEscape(data, ourShips, combinedShips);
+
     // display result
     var desc = "";
     for (o in ourShips) {
       ship = ourShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
     for (o in combinedShips) {
       ship = combinedShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 
@@ -945,19 +1010,30 @@ LBBattle.prototype = {
     this.regulateHP(enemyShips);
     this.regulateHP(combinedShips);
 
+    // check escaped
+    this.checkEscape(data, ourShips, combinedShips);
+
     // display result
     var desc = "";
     var o, ship;
     for (o in ourShips) {
       ship = ourShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setOurFleet(ourShips);
 
     desc = "";
     for (o in combinedShips) {
       ship = combinedShips[o];
-      desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      if (!ship.escaped) {
+        desc += "[" + ship.name + " " + ship.nowhp + "/" + ship.maxhp + "] ";
+      } else {
+        desc += "[" + ship.name + " Escaped] ";
+      }
     }
     LogbookWeb.getTab().getBattleTab().setCombinedFleet(combinedShips);
 

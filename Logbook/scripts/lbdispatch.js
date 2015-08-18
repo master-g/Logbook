@@ -172,8 +172,8 @@ gDispatchTable[K_API_BATTLE_RESULT]         = proc_api_battle_result;
 
 function do_test() {
   try {
-    var d = JSON.parse(raw_combined_midnight)[KCK.DATA];
-    LBBattle.getInstance().inspectCombinedMidnight(d);
+    var d = JSON.parse(raw_combined)[KCK.DATA];
+    LBBattle.getInstance().inspectCombinedBattleWater(d);
   } catch (e) {
     Console.log('hi');
     Console.log(e.message);

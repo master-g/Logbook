@@ -278,6 +278,26 @@ LBBattle.prototype = {
     }
   },
 
+  calculateSupportDamage: function(enemyDamage, data) {
+    // var supportFlag = data[KCK.SUPPORT_FLAG];
+    var supportInfo = data[KCK.SUPPORT_INFO];
+
+    if(!supportInfo) {
+      return;
+    }
+    var i, damage;
+
+    // var air_phase = supportInfo[KCK.SUPPORT_AIRATTACK];
+    var cannon_phase = supportInfo[KCK.SUPPORT_HUORAI];
+    if (cannon_phase && cannon_phase[KCK.DAMAGE]) {
+      damage = cannon_phase[KCK.DAMAGE].slice(0);
+      damage.shift();
+      for (i = 0; i < damage.length; i++) {
+        enemyDamage[i] += damage[i];
+      }
+    }
+  },
+
   inspectBattle: function(data) {
     var ourShips = [];
     var enemyShips = [];
@@ -604,7 +624,8 @@ LBBattle.prototype = {
       this.calculateCombinedSimpleDamage(combinedTotalDamage, stage3_combined);
     }
 
-    // TODO: support stage missing
+    // support stage
+    this.calculateSupportDamage(enemyTotalDamage, data);
 
     // opening attack
     var phaseOpeningAttack = data[KCK.OPENING_ATACK];
@@ -835,7 +856,8 @@ LBBattle.prototype = {
       this.calculateSimpleDamage(combinedTotalDamage, enemyTotalDamage, phaseOpeningAttack);
     }
 
-    // TODO: support stage missing
+    // support stage
+    this.calculateSupportDamage(enemyTotalDamage, data);
 
     // cannon attack
     var damageObjArray = [];
@@ -990,7 +1012,8 @@ LBBattle.prototype = {
       this.calculateCombinedSimpleDamage(combinedTotalDamage, stage3_combined);
     }
 
-    // TODO: support stage missing
+    // support stage
+    this.calculateSupportDamage(enemyTotalDamage, data);
 
     // apply damage
     for (i = 0; i < ourShips.length; i++) {

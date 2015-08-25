@@ -359,6 +359,8 @@ LBBattle.prototype = {
       this.calculateSimpleDamage(ourTotalDamage, enemyTotalDamage, torpedoAttack);
     }
 
+    this.calculateSupportDamage(enemyTotalDamage, data);
+
     // apply damage
     for (i = 0; i < ourShips.length; i++) {
       ourShips[i].nowhp -= ourTotalDamage[i];

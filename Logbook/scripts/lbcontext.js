@@ -373,6 +373,7 @@ LBContext.prototype = {
       ship.condition = s.condition;
       ship.lvupexp = s.lvupexp;
       ship.slot = [];
+      ship.icon = [];
       for (var j in s.slot) {
         var itemId = s.slot[j];
         if (itemId == -1) {
@@ -381,15 +382,20 @@ LBContext.prototype = {
 
         var slotitem_id = this.slotitem[itemId].slotitem_id;
         var itemName = LBManifest.getInstance().getSlotItem(slotitem_id).name;
+        var itemIcon = LBManifest.getInstance().getSlotItem(slotitem_id).icon;
         ship.slot.push(itemName);
+        ship.icon.push(itemIcon);
       }
 
       if (s.slotex !== 0 && s.slotex !== -1) {
         var exslot_id = this.slotitem[s.slotex].slotitem_id;
         var exname = LBManifest.getInstance().getSlotItem(exslot_id).name;
+        var exicon = LBManifest.getInstance().getSlotItem(exslot_id).icon;
         ship.slotex = exname;
+        ship.exicon = exicon;
       } else {
         ship.slotex = 0;
+        ship.exicon = "";
       }
 
       ships.push(ship);

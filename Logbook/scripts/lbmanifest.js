@@ -61,15 +61,69 @@ LBManifest.prototype = {
   },
 
   parseSlotItem: function(data) {
+    var slotid2graph = [
+      [0, 0],
+      [3, 74],
+      [5, 76],
+      [7, 78],
+      [9, 80],
+      [11, 82],
+      [13, 84],
+      [15, 86],
+      [17, 88],
+      [19, 90],
+      [21, 92],
+      [21, 92],
+      [23, 94],
+      [23, 94],
+      [37, 108],
+      [35, 106],
+      [47, 118],
+      [39, 110],
+      [25, 96],
+      [27, 98],
+      [25, 96],
+      [31, 102],
+      [11, 82],
+      [29, 100],
+      [41, 112],
+      [43, 114],
+      [45, 116],
+      [47, 118],
+      [47, 118],
+      [49, 120],
+      [51, 122],
+      [53, 124],
+      [11, 82],
+      [55, 126],
+      [57, 128],
+      [59, 130],
+      [61, 132],
+      [63, 134],
+      [7, 78],
+      [65, 136],
+      [37, 108],
+      [67, 138],
+      [49, 120],
+      [69, 140],
+      [71, 142]
+    ];
+
     var item = {};
     if (data) {
       item.id = data[KCK.ID];
       item.name = data[KCK.NAME];
       item.type = data[KCK.TYPE];
+      if (slotid2graph[item.type[2]]) {
+        item.icon = slotid2graph[item.type[2]][1] + ".png";
+      } else {
+        item.icon = "0.png";
+      }
     } else {
       item.id = 0;
       item.name = 'N/A';
-      item.type = 0;
+      item.type = [0, 0, 0, 0];
+      item.icon = "0.png";
     }
 
     return item;
@@ -96,34 +150,35 @@ LBManifest.prototype = {
     this.slotitem = {};
     this.mission = {};
 
+    var i, info;
     // parse ship model data
     var ships = data[KCK.MST.SHIP];
-    for (var i in ships) {
-      var info = ships[i]
+    for (i in ships) {
+      info = ships[i];
       var ship = this.parseShip(info);
       this.ship[ship.id] = ship;
     }
 
     // parse slot item data
     var items = data[KCK.MST.SLOTITEM];
-    for (var i in items) {
-      var info = items[i];
+    for (i in items) {
+      info = items[i];
       var item = this.parseSlotItem(info);
       this.slotitem[item.id] = item;
     }
 
     // parse mission data
     var missions = data[KCK.MST.MISSION];
-    for (var i in missions) {
-      var info = missions[i];
+    for (i in missions) {
+      info = missions[i];
       var mission = this.parseMission(info);
       this.mission[mission.id] = mission;
     }
 
     // parse ship type info
     var stype = data[KCK.MST.STYPE];
-    for (var i in stype) {
-      var info = stype[i];
+    for (i in stype) {
+      info = stype[i];
       this.shiptype[info[KCK.ID]] = info[KCK.NAME];
     }
 

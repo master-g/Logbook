@@ -428,10 +428,11 @@ LBPortTab.prototype = {
         $(ship_tag + '_slottext_' + j).html('N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass('list-group-item list-group-item-default');
+        $(ship_tag + '_sloticon_' + j).src = "";
       }
     }
   },
-
+/*
   setFleet: function(idx, fleet) {
     this.clearFleet();
 
@@ -488,6 +489,9 @@ LBPortTab.prototype = {
       }
 
       for (var j = 1; j < 5; j++) {
+        if (ship.icon[j - 1]) {
+          $(ship_tag + "_sloticon_" + j).src = "/icons/" + ship.icon[j - 1];
+        }
         $(ship_tag + '_slottext_' + j).html(ship.slot[j - 1] || 'N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass(ship.slot[j - 1] ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
@@ -498,6 +502,7 @@ LBPortTab.prototype = {
       $(ship_tag + '_slot_' + 5).addClass(ship.slotex ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
     }
   }
+  */
 };
 
 LBPortTab.prototype.constructor = LBPortTab;
@@ -537,6 +542,8 @@ LBFleetTab.prototype = {
         $(ship_tag + '_slottext_' + j).html('N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass('list-group-item list-group-item-default');
+
+        $(ship_tag + '_sloticon_' + j).attr("src", "/icons/slotitem/0.png");
       }
     }
   },
@@ -597,6 +604,10 @@ LBFleetTab.prototype = {
       }
 
       for (var j = 1; j < 5; j++) {
+        if (ship.icon[j - 1]) {
+          $(ship_tag + "_sloticon_" + j).attr("src", "/icons/slotitem/" + ship.icon[j - 1]);
+        }
+
         $(ship_tag + '_slottext_' + j).html(ship.slot[j - 1] || 'N/A');
         $(ship_tag + '_slot_' + j).removeClass();
         $(ship_tag + '_slot_' + j).addClass(ship.slot[j - 1] ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
@@ -605,6 +616,11 @@ LBFleetTab.prototype = {
       $(ship_tag + '_slottext_' + 5).html(ship.slotex || 'N/A');
       $(ship_tag + '_slot_' + 5).removeClass();
       $(ship_tag + '_slot_' + 5).addClass(ship.slotex ? 'list-group-item list-group-item-warning' : 'list-group-item list-group-item-default');
+      if (ship.exicon && ship.exicon !== "") {
+        $(ship_tag + "_sloticon_" + 5).attr("src", "/icons/slotitem/" + ship.exicon);
+      } else {
+        $(ship_tag + "_sloticon_" + 5).attr("src", "/icons/slotitem/0.png");
+      }
     }
   }
 };

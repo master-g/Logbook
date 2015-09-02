@@ -277,7 +277,8 @@ LBContext.prototype = {
 
   speedChange: function(data) {
     var dock_id = 0;
-    for (var i in data) {
+    var i;
+    for (i in data) {
       var name = unescape(data[i].name);
 
       if (name == "api_ndock_id") {
@@ -288,7 +289,7 @@ LBContext.prototype = {
     if (dock_id === 0 || this.ndock === undefined || this.ndock[0] === undefined)
       return;
 
-    for (var i in this.ndock) {
+    for (i in this.ndock) {
       var dock = this.ndock[i];
       if (dock[KCK.ID] == dock_id) {
         dock[KCK.SHIP_ID] = 0;

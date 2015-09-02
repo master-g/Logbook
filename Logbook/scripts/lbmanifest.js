@@ -61,64 +61,13 @@ LBManifest.prototype = {
   },
 
   parseSlotItem: function(data) {
-    var slotid2graph = [
-      [0, 0],
-      [3, 74],
-      [5, 76],
-      [7, 78],
-      [9, 80],
-      [11, 82],
-      [13, 84],
-      [15, 86],
-      [17, 88],
-      [19, 90],
-      [21, 92],
-      [21, 92],
-      [23, 94],
-      [23, 94],
-      [37, 108],
-      [35, 106],
-      [47, 118],
-      [39, 110],
-      [25, 96],
-      [27, 98],
-      [25, 96],
-      [31, 102],
-      [11, 82],
-      [29, 100],
-      [41, 112],
-      [43, 114],
-      [45, 116],
-      [47, 118],
-      [47, 118],
-      [49, 120],
-      [51, 122],
-      [53, 124],
-      [11, 82],
-      [55, 126],
-      [57, 128],
-      [59, 130],
-      [61, 132],
-      [63, 134],
-      [7, 78],
-      [65, 136],
-      [37, 108],
-      [67, 138],
-      [49, 120],
-      [69, 140],
-      [71, 142]
-    ];
-
     var item = {};
     if (data) {
       item.id = data[KCK.ID];
       item.name = data[KCK.NAME];
       item.type = data[KCK.TYPE];
-      if (slotid2graph[item.type[2]]) {
-        item.icon = slotid2graph[item.type[2]][1] + ".png";
-      } else {
-        item.icon = "0.png";
-      }
+      var iconid = item.type[3] * 2 + 72;
+      item.icon = iconid + ".png";
     } else {
       item.id = 0;
       item.name = 'N/A';
@@ -145,6 +94,8 @@ LBManifest.prototype = {
   },
 
   init: function(data) {
+    this.raw = data;
+
     this.ship = {};
     this.shiptype = {};
     this.slotitem = {};
@@ -239,13 +190,7 @@ LBManifest.prototype = {
   },
 
   save: function(callback) {
-    var data = {};
-    data.ship = this.ship;
-    data.slotitem = this.slotitem;
-    data.mission = this.mission;
-    data.shiptype = this.shiptype;
-
-    LocalStorage.save(LB_KEY_API_START_DATA, data, function(result) {
+    LocalStorage.save(LB_KEY_API_START_DATA, this.raw, function(result) {
       if (callback) {
         callback(result);
       }
@@ -257,10 +202,7 @@ LBManifest.prototype = {
   load: function(callback) {
     LocalStorage.load(LB_KEY_API_START_DATA, function(result, data) {
       if (result) {
-        LBManifest.getInstance().ship = data.ship;
-        LBManifest.getInstance().slotitem = data.slotitem;
-        LBManifest.getInstance().mission = data.mission;
-        LBManifest.getInstance().shiptype = data.shiptype;
+        LBManifest.getInstance().init(data);
 
         Console.info("Logbook | LBManifest data loaded.");
         LBManifest.getInstance().ready = true;

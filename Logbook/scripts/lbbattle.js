@@ -37,16 +37,6 @@ LBBattle = function() {
 };
 
 LBBattle.prototype = {
-  checkFormation: function(data) {
-    var formationStr = [undefined, '同航戦', '反航戦', 'T字有利', 'T字不利'];
-    var formation = data[KCK.FORMATION];
-    if (formation) {
-      return formationStr[formation[2]];
-    } else {
-      return formationStr[0];
-    }
-  },
-
   checkEscape: function(data, ourShips, combinedShips) {
     var escaped = {};
     if (data[KCK.ESCAPE_IDX]) {
@@ -203,40 +193,104 @@ LBBattle.prototype = {
   },
 
   getDetailReport: function(data) {
-    var report = {};
+    Console.log(data);
+
+    var genfleetdesc = function(fleet) {
+      var i, ship, desc;
+      desc = '';
+      for (i = 0; i < fleet.length; i++) {
+        ship = fleet[i];
+        desc += ship.name + ' [' + ship.nowhp + '/' + ship.maxhp + '] ';
+      }
+      return desc;
+    };
+    var genplanetakeoff = function(ships, planes, prefix) {
+      var i, j, k = false;
+      var desc = prefix + '方舰载机由: ';
+      for (i = 0; i < planes.length; i++) {
+        j = planes[i];
+        if (j !== -1) {
+          desc += ships[j].name + ' ';
+          k = true;
+        }
+      }
+      desc += '上起飞';
+
+      return desc;
+    };
+
+    var i, j, k, desc;
+
+    var report = [];
     // fleet info
     var fleetInfo = this.buildFleetInfo(data);
     var shipMap = fleetInfo.ships;
-    // formation
-    report.formation = this.checkFormation(data);
 
-    // air raid phase
-    report.phase_air = {};
-    report.phase_air.our = [];
-    report.phase_air.enemy = [];
-    var kouku = data[KCK.KOUKU];
-    if (kouku) {
-      // get source
-      var plane_from = kouku[KCK.PLANE_FROM];
-      if (plane_from) {
-        var our_plane = plane_from[0].slice(0);
-        var enemy_plane = plane_from[1].slice(0);
-        // TODO, design data scheme
-        var i = 0;
-        for (i in our_plane) {
-          if (our_plane[i] != -1) {
-            report.phase_air.our.push(shipMap[our_plane[i]].name);
-          }
+    report.push('我方 ' + fleetInfo.ourFleetName + ' 舰队参加战斗');
+    report.push('我方参战舰船:');
+    report.push(genfleetdesc(fleetInfo.ourShips));
+    report.push('敌方参战舰船:');
+    report.push(genfleetdesc(fleetInfo.enemyShips));
+
+    // formation
+    var formarr = ['N/A', '单纵阵', '复纵阵', '轮型阵', '梯形阵', '单横阵'];
+    var directarr = ['N/A', '同航战', '反航战', 'T有利', 'T不利'];
+    report.push('我方阵型: ' + formarr[data.api_formation[0]]);
+    report.push('敌方阵型: ' + formarr[data.api_formation[1]]);
+    report.push('航向: ' + directarr[data.api_formation[2]]);
+
+    // kouku
+    if (data.api_kouku && data.api_kouku !== null) {
+      var fplanesrc = data.api_kouku.api_plane_from[0];
+      var eplanesrc = data.api_kouku.api_plane_from[1];
+
+      report.push(genplanetakeoff(fleetInfo.ships, fplanesrc, '我'));
+      report.push(genplanetakeoff(fleetInfo.ships, eplanesrc, '敌'));
+
+      // kouku stage 1
+      var stage1 = data.api_kouku.api_stage1;
+      if (stage1) {
+        report.push('我方飞机起飞 ' + stage1.api_f_count + ' 架, 损失 ' + stage1.api_f_lostcount + '架');
+        report.push('敌方飞机起飞 ' + stage1.api_e_count + ' 架, 损失 ' + stage1.api_e_lostcount + '架');
+
+        var touchplaneid = stage1.api_touch_plane[0];
+        var touchplanename = '';
+        if (touchplaneid !== -1) {
+          touchplanename = LBManifest.getInstance().getSlotItem(touchplaneid).name;
+          report.push('我方 ' + touchplanename + ' 与敌方发生接触');
         }
-        for (i in enemy_plane) {
-          if (enemy_plane[i] != -1) {
-            report.phase_air.enemy.push(shipMap[enemy_plane[i]].name);
-          }
+
+        touchplaneid = stage1.api_touch_plane[1];
+        if (touchplaneid !== -1) {
+          touchplanename = LBManifest.getInstance().getSlotItem(touchplaneid).name;
+          report.push('敌方 ' + touchplanename + ' 与我方发生接触');
         }
+
+        if (stage1.api_disp_seiku === 1) {
+          report.push('制空权确保');
+        } else {
+          report.push('丧失制空权');
+        }
+      }
+      // stage2
+      var stage2 = data.api_kouku.api_stage2;
+      if (stage2) {
+        report.push('在航空战的第二阶段中');
+        report.push('我方共有 ' + stage2.api_f_count + ' 架次飞机参加战斗, 损失 ' + stage2.api_f_lostcount + ' 架');
+        report.push('敌方共有 ' + stage2.api_e_count + ' 架次飞机参加战斗, 损失 ' + stage2.api_e_lostcount + ' 架');
+      }
+
+      // stage3
+      var stage3 = data.api_kouku.api_stage3;
+      if (stage3) {
+        // TODO
       }
     }
 
-    Console.log(report);
+    // output
+    for (i = 0; i < report.length; i++) {
+      Console.log(report[i]);
+    }
     return report;
   },
 
@@ -282,7 +336,7 @@ LBBattle.prototype = {
     // var supportFlag = data[KCK.SUPPORT_FLAG];
     var supportInfo = data[KCK.SUPPORT_INFO];
 
-    if(!supportInfo) {
+    if (!supportInfo) {
       return;
     }
     var i, damage;
